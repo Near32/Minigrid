@@ -51,7 +51,7 @@ class ObjDesc:
     Description of a set of objects in an environment
     """
 
-    def __init__(self, type, color=None, loc=None):
+    def __init__(self, type, color=None, loc=None, relevant_types=OBJ_TYPES, relevant_colors=COLOR_NAMES):
         assert type in [None, *OBJ_TYPES], type
         assert color in [None, *COLOR_NAMES], color
         assert loc in [None, *LOC_NAMES], loc
@@ -59,6 +59,9 @@ class ObjDesc:
         self.color = color
         self.type = type
         self.loc = loc
+        
+        self.relevant_types = relevant_types
+        self.relevant_colors = relevant_colors
 
         # Set of objects possibly matching the description
         self.obj_set = []
@@ -122,6 +125,13 @@ class ObjDesc:
                 cell = env.grid.get(i, j)
                 if cell is None:
                     continue
+                
+                # Check if object's type is among relevant types:
+                if cell.type not in self.relevant_types:
+                    continue
+                # Check if object's color is among relevant colours:
+                if cell.color not in self.relevant_colors:
+                    continue 
 
                 if not use_location:
                     # we should keep tracking the same objects initially tracked only
@@ -132,7 +142,7 @@ class ObjDesc:
                 # Check if object's type matches description
                 if self.type is not None and cell.type != self.type:
                     continue
-
+                
                 # Check if object's color matches description
                 if self.color is not None and cell.color != self.color:
                     continue
@@ -309,6 +319,49 @@ class GoToInstr(ActionInstr):
         for pos in self.desc.obj_poss:
             # If the agent is next to (and facing) the object
             if np.array_equal(pos, self.env.front_pos):
+                return "success"
+
+        return "continue"
+
+
+class FaceUpInstr(ActionInstr):
+    """
+    Face an object matching a given description
+    eg: blue key / blue / key
+    """
+
+    def __init__(self, obj_desc, wheel_idx=0):
+        super().__init__()
+        self.desc = obj_desc
+        self.wheel_idx = wheel_idx
+
+    def surface(self, env):
+        return self.desc.surface(env)
+
+    def reset_verifier(self, env):
+        super().reset_verifier(env)
+
+        # Identify set of possible matching objects in the environment
+        self.desc.find_matching_objs(env)
+
+    def verify_action(self, action):
+        front_offset = self.env.front_pos-self.env.agent_pos
+        # For each object position
+        for pos in self.desc.obj_poss:
+            # If the agent is facing the object
+            obj_offset = pos-self.env.agent_pos
+            same_line = False
+            in_front = False
+            for fo, oo in zip(front_offset, obj_offset):
+                if fo==0:
+                    same_line = (oo==0)
+                elif fo>0:
+                    in_front = (oo>0) and (abs(oo)==(self.wheel_idx+1))
+                else: #fo<0
+                    in_front = (oo<0) and (abs(oo)==(self.wheel_idx+1))
+            
+            facing_obj = in_front and same_line
+            if facing_obj:
                 return "success"
 
         return "continue"
@@ -561,6 +614,39 @@ class AndInstr(SeqInstr):
                 return "failure"
 
         if self.a_done == "success" and self.b_done == "success":
+            return "success"
+
+        return "continue"
+
+
+class ListInstr(Instr, ABC):
+    """
+    Conjunction of list of actions, both can be completed in any order
+    eg: go to the red door and pick up the blue ball
+    """
+
+    def __init__(self, instr_list, strict=False):
+        for instr in instr_list:
+            assert isinstance(instr, ActionInstr)
+        super().__init__()
+        self.instrs = instr_list
+
+    def surface(self, env):
+        return " ".join([instr.surface(env) for instr in self.instrs])
+
+    def reset_verifier(self, env):
+        super().reset_verifier(env)
+        for instr in self.instrs:
+            instr.reset_verifier(env)
+        self.dones = [False for _ in range(len(self.instrs))]
+
+    def verify(self, action):
+        self.dones = [False for _ in range(len(self.instrs))]
+        for instr_idx, instr in enumerate(self.instrs):
+            if self.dones[instr_idx] != "success":
+                self.dones[instr_idx] = instr.verify(action)
+        
+        if all([done=='success' for done in self.dones]):
             return "success"
 
         return "continue"

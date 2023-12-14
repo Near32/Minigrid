@@ -10,6 +10,9 @@ from minigrid.envs.fetch import FetchEnv
 from minigrid.envs.fourrooms import FourRoomsEnv
 from minigrid.envs.gotodoor import GoToDoorEnv
 from minigrid.envs.gotoobject import GoToObjectEnv
+from minigrid.envs.faceupobject import (
+    FaceUpObjectEnv,
+)
 from minigrid.envs.keycorridor import KeyCorridorEnv
 from minigrid.envs.lavagap import LavaGapEnv
 from minigrid.envs.lockedroom import LockedRoom, LockedRoomEnv

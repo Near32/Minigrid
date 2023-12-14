@@ -11,6 +11,7 @@ from minigrid.envs.babyai.core.verifier import (
     BeforeInstr,
     PutNextInstr,
     SeqInstr,
+    ListInstr,
 )
 from minigrid.minigrid_env import MissionSpace
 
@@ -195,6 +196,11 @@ class RoomGridLevel(RoomGrid):
             self.validate_instrs(instr.instr_b)
             return
 
+        if isinstance(instr, ListInstr):
+            for instr_i in instr.instrs:
+                self.validate_instrs(instr_i)
+            return
+
         assert False, "unhandled instruction type"
 
     def gen_mission(self):
@@ -218,7 +224,10 @@ class RoomGridLevel(RoomGrid):
         a simple or complex instruction
         """
 
-        if isinstance(instr, PutNextInstr):
+        if isinstance(instr, ListInstr):
+            return len(instr.instrs)
+
+        elif isinstance(instr, PutNextInstr):
             return 2
 
         elif isinstance(instr, ActionInstr):
