@@ -35,8 +35,12 @@ class ManualControl:
                     self.key_handler(event)
 
     def step(self, action: Actions):
-        obs, reward, terminated, truncated, _ = self.env.step(action)
+        obs, reward, terminated, truncated, info = self.env.step(action)
         print(f"step={self.env.step_count}, reward={reward:.2f}")
+        if 'achieved_goal' in obs:
+            print(f"OBS: achieved_goal : {obs['achieved_goal']}")
+        for key in info:
+            print(f"INFO: {key} : {info[key]}")
 
         if terminated:
             print("terminated!")

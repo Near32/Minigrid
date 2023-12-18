@@ -12,11 +12,31 @@ from minigrid.core.constants import COLOR_NAMES
 from minigrid.core.world_object import WorldObj, Lava, Goal, Door, Wall
 from minigrid.envs.babyai.core.roomgrid_level import RoomGridLevel
 from minigrid.envs.babyai.core.verifier import ObjDesc, FaceUpInstr, ListInstr
+from minigrid.minigrid_env import MissionSpace
 
 # Object types we are allowed to describe in language
 OBJ_TYPES = ["box", "ball", "key", "door"]
 # Object types we are allowed to describe in language
 OBJ_TYPES_NOT_DOOR = list(filter(lambda t: t != "door", OBJ_TYPES))
+
+
+class BabyAIMissionSpace(MissionSpace):
+    """
+    Class that mimics the behavior required by minigrid.minigrid_env.MissionSpace,
+    but does not change how missions are generated for BabyAI. It silences
+    the gymnasium.utils.passive_env_checker given that it considers all strings to be
+    plausible samples.
+    """
+
+    def __init__(self):
+        super().__init__(mission_func=self._gen_mission)
+
+    @staticmethod
+    def _gen_mission():
+        return "go"
+
+    def contains(self, x: str):
+        return True
 
 
 class FaceUpActions(IntEnum):
@@ -161,6 +181,9 @@ class FaceUpObjectEnv(RoomGridLevel):
         # Actions are discrete integer values
         self.action_space = spaces.Discrete(len(self.actions)*self.nbr_wheels)
         
+        achieved_goal_space = BabyAIMissionSpace()
+        self.observation_space['achieved_goal'] = achieved_goal_space
+
         # Intermediates:
         self.id2inter_type = [Lava, Goal, partial(Door, color='grey')] 
         self.intermediate_count = {}
@@ -168,6 +191,25 @@ class FaceUpObjectEnv(RoomGridLevel):
             self.intermediate_count[wheel_idx] = min(1, self.nbr_intermediate_states) 
         # i.e. after at most one move left, we find a goal state.
     
+    def get_achieved_goal(self):
+        wheel2obj = []
+        for wheel_idx in range(self.nbr_wheels):
+            if self.intermediate_count[wheel_idx] == 0:
+                wheel2obj.append(
+                    self.visible_objs[wheel_idx][0]
+                )
+            else:
+                wheel2obj.append(None)
+        achieved_goal = []
+        for obj in wheel2obj:
+            if obj is None:
+                achieved_goal += ['none']*2
+            else:
+                achieved_goal += [obj.color, obj.type]
+
+        achieved_goal = ' '.join(achieved_goal)
+        return achieved_goal
+
     # Overriden from RoomGridLevel:
     def reset(self, **kwargs):
         return_info = kwargs.pop('return_info', True)
@@ -184,6 +226,8 @@ class FaceUpObjectEnv(RoomGridLevel):
         if not self.fixed_max_steps:
             self.max_steps = num_navs * nav_time_maze
         
+        obs['achieved_goal'] = self.get_achieved_goal()
+
         if return_info:
             return obs, info
         return obs
@@ -320,6 +364,7 @@ class FaceUpObjectEnv(RoomGridLevel):
     ) -> tuple[ObsType, SupportsFloat, bool, bool, dict[str, Any]]:
         self.step_count += 1
 
+        info = {}
         reward = 0
         terminated = False
         truncated = False
@@ -392,7 +437,9 @@ class FaceUpObjectEnv(RoomGridLevel):
             terminated = True
             reward = 0
 
-        return obs, reward, terminated, truncated, {}
+        obs['achieved_goal'] = self.get_achieved_goal()
+        
+        return obs, reward, terminated, truncated, info
 
     # Overriden from RoomGrid
     def add_distractors(
