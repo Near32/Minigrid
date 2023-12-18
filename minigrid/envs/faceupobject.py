@@ -48,6 +48,9 @@ class FaceUpObjDesc(ObjDesc):
         """
 
         self.find_matching_objs(env)
+        if len(self.obj_set)<=0:
+            import ipdb; ipdb.set_trace()
+            self.find_matching_objs(env)
         assert len(self.obj_set) > 0, "no object matching description"
 
         if self.type and self.color:
@@ -288,6 +291,7 @@ class FaceUpObjectEnv(RoomGridLevel):
         
         for wheel_idx in range(self.nbr_wheels):
             self.reset_grid(wheel_idx=wheel_idx)
+        for wheel_idx in range(self.nbr_wheels):
             self._put_intermediates(wheel_idx=wheel_idx)
             self._put_objs(wheel_idx=wheel_idx)
 
@@ -297,7 +301,8 @@ class FaceUpObjectEnv(RoomGridLevel):
             type = obj.type
             color = obj.color
             
-            select_by = self._rand_elem(["type", "color", "both"])
+            # For now, we always specify goals with both color and type:
+            select_by = 'both' #self._rand_elem(["type", "color", "both"])
             if select_by == "color":
                 type = None
             elif select_by == "type":
@@ -306,6 +311,7 @@ class FaceUpObjectEnv(RoomGridLevel):
             self.instrs.append(
                 FaceUpInstr(FaceUpObjDesc(type, color), wheel_idx=wheel_idx)
             )
+        
         self.instrs = ListInstr(self.instrs)
     
     # Overriding from RoomGridLevel/MiniGridEnv
@@ -401,13 +407,14 @@ class FaceUpObjectEnv(RoomGridLevel):
         """
         # List of distractors added
         dists = []
+        objs = []
 
         while len(dists) < num_distractors:
             color = self._rand_elem(COLOR_NAMES)
             type = self._rand_elem(["key", "ball", "box"])
             obj = (type, color)
 
-            if all_unique and obj in dists:
+            if all_unique and obj in objs:
                 continue
 
             # Add the object to a random room if no room specified
@@ -421,5 +428,6 @@ class FaceUpObjectEnv(RoomGridLevel):
             dist, pos = self.add_object(room_i, room_j, *obj)
 
             dists.append(dist)
+            objs.append(obj)
 
         return dists    
