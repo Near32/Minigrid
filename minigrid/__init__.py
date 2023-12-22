@@ -264,6 +264,114 @@ def register_minigrid_envs():
     # ----------------------------------------
 
     register(
+        id="MiniGrid-FaceUpObject-I0-N3-W1-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 0, "nbr_objs": 3, 'nbr_wheels': 1},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I1-N3-W1-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 1, "nbr_objs": 3},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I2-N3-W1-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 2, "nbr_objs": 3},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I3-N3-W1-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 3, "nbr_objs": 3},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I0-N3-W2-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 0, "nbr_objs": 3, "nbr_wheels":2,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I1-N3-W2-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 1, "nbr_objs": 3, "nbr_wheels":2,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I2-N3-W2-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 2, "nbr_objs": 3, "nbr_wheels":2,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I3-N3-W2-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 3, "nbr_objs": 3, "nbr_wheels":2,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I0-N3-W3-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 0, "nbr_objs": 3, "nbr_wheels":3,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I1-N3-W3-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 1, "nbr_objs": 3, "nbr_wheels":3,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I2-N3-W3-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 2, "nbr_objs": 3, "nbr_wheels":3,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I3-N3-W3-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 3, "nbr_objs": 3, "nbr_wheels":3,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I4-N3-W3-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 4, "nbr_objs": 3, "nbr_wheels":3,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I0-N3-W4-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 0, "nbr_objs": 3, "nbr_wheels":4,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I1-N3-W4-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 1, "nbr_objs": 3, "nbr_wheels":4,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I2-N3-W4-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 2, "nbr_objs": 3, "nbr_wheels":4,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I3-N3-W4-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 3, "nbr_objs": 3, "nbr_wheels":4,},
+    )
+
+    register(
+        id="MiniGrid-FaceUpObject-I4-N3-W4-v0",
+        entry_point="minigrid.envs:FaceUpObjectEnv",
+        kwargs={"nbr_intermediate_states": 4, "nbr_objs": 4, "nbr_wheels":4,},
+    )
+
+    register(
         id="MiniGrid-FaceUpObject-I0-N4-W1-v0",
         entry_point="minigrid.envs:FaceUpObjectEnv",
     )

@@ -269,7 +269,7 @@ class FaceUpObjectEnv(RoomGridLevel):
             )
 
     def _put_objs(self, wheel_idx=0):
-        nbr_visible_objs = 4
+        nbr_visible_objs = self.nbr_objs
         if self.nbr_intermediate_states != 0:   nbr_visible_objs = 2
         if self.intermediate_count[wheel_idx] != 0:    
             nbr_visible_objs = 0
@@ -280,6 +280,8 @@ class FaceUpObjectEnv(RoomGridLevel):
             (midroom-1-wheel_idx, midroom), #left
             (midroom, midroom-1-wheel_idx), #top
         ]
+        if self.nbr_objs<=3:
+            del poses[2]
         for obj_idx, obj in enumerate(self.visible_objs[wheel_idx]):
             if self.intermediate_count[wheel_idx] == 0:
                 pose = poses[obj_idx]
