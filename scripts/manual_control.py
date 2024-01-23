@@ -42,14 +42,21 @@ parser.add_argument("--obs_size", type=int, default=7)
 
 args = parser.parse_args()
 
+env_kwargs = {}
+if args.num_objs !=4:   env_kwargs['nbr_objs'] = args.num_objs
+if args.room_size !=9:  env_kwargs['room_size'] = args.room_size
+env_kwargs['maxNumRooms'] = 7
+
 env = gym.make(
     args.env_name, 
     render_mode="human",
-    nbr_objs=args.num_objs,
-    room_size=args.room_size,
+    #nbr_objs=args.num_objs,
+    #room_size=args.room_size,
     agent_view_size=7,
     screen_size=640,
     tile_size=32,
+    #maxNumRooms=7,
+    **env_kwargs,
 )
 
 if args.no_time_limit:
