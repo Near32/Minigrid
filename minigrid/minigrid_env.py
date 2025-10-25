@@ -6,6 +6,8 @@ from abc import abstractmethod
 from typing import Any, Iterable, SupportsFloat, TypeVar
 
 import gymnasium as gym
+from gym.utils import seeding
+
 import numpy as np
 import pygame
 import pygame.freetype
@@ -115,6 +117,9 @@ class MiniGridEnv(gym.Env):
         self.highlight = highlight
         self.tile_size = tile_size
         self.agent_pov = agent_pov
+
+    def seed(self, seed):
+        self._np_random, self._np_random_seed = seeding.np_random(seed)
 
     def reset(
         self,

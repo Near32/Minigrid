@@ -405,7 +405,7 @@ class FullyObsWrapper(ObservationWrapper):
         new_image_space = spaces.Box(
             low=0,
             high=255,
-            shape=(self.env.width, self.env.height, 3),  # number of cells
+            shape=(self.env.unwrapped.width, self.env.unwrapped.height, 3),  # number of cells
             dtype="uint8",
         )
 
