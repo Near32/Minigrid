@@ -395,6 +395,89 @@ def register_minigrid_envs():
         kwargs={"minNumRooms": 7, "maxNumRooms": 7, "maxRoomSize": 4},
     )
 
+    # DuplicateObject
+    # ----------------------------------------
+
+    # 8x8 
+    register(
+        id="MiniGrid-ColorDuplicateObject-N4S8-v0",
+        entry_point="minigrid.envs:ColorFocusedDuplicateEnv",
+        kwargs={
+            "room_size": 8,
+            "num_objects": 4,
+            "agent_view_size": 3,
+        },
+    )
+    
+    register(
+        id="MiniGrid-ShapeDuplicateObject-N4S8-v0",
+        entry_point="minigrid.envs:ShapeFocusedDuplicateEnv",
+        kwargs={
+            "room_size": 8,
+            "num_objects": 4,
+            "agent_view_size": 3,
+        },
+    )
+
+    # 8x8 with 2 task-irrelevant variations
+    register(
+        id="MiniGrid-ColorDuplicateObject-N4S8V2-v0",
+        entry_point="minigrid.envs:ColorFocusedDuplicateEnv",
+        kwargs={
+            "room_size": 8,
+            "num_objects": 4,
+            "agent_view_size": 3,
+            "shape_palette": ["key", "ball"],
+        },
+    )
+    
+    register(
+        id="MiniGrid-ShapeDuplicateObject-N4S8V2-v0",
+        entry_point="minigrid.envs:ShapeFocusedDuplicateEnv",
+        kwargs={
+            "room_size": 8,
+            "num_objects": 4,
+            "agent_view_size": 3,
+            "color_palette": ["red", "blue"],
+        },
+    )
+
+    # 8x8 with 3 task-irrelevant variations
+    register(
+        id="MiniGrid-ColorDuplicateObject-N4S8V3-v0",
+        entry_point="minigrid.envs:ColorFocusedDuplicateEnv",
+        kwargs={
+            "room_size": 8,
+            "num_objects": 4,
+            "agent_view_size": 3,
+            "shape_palette": ["key", "ball", "box"],
+        },
+    )
+    
+    register(
+        id="MiniGrid-ShapeDuplicateObject-N4S8V3-v0",
+        entry_point="minigrid.envs:ShapeFocusedDuplicateEnv",
+        kwargs={
+            "room_size": 8,
+            "num_objects": 4,
+            "agent_view_size": 3,
+            "color_palette": ["red", "blue", "green"],
+        },
+    )
+
+    # 16x16
+    register(
+        id="MiniGrid-ColorDuplicateObject-N4S16-v0",
+        entry_point="minigrid.envs:ColorFocusedDuplicateEnv",
+        kwargs={"room_size": 16, "num_objects": 4, 'agent_view_size': 3},
+    )
+
+    register(
+        id="MiniGrid-ShapeDuplicateObject-N4S16-v0",
+        entry_point="minigrid.envs:ShapeFocusedDuplicateEnv",
+        kwargs={"room_size": 16, "num_objects": 4, 'agent_view_size': 3},
+    )
+
     # ObstructedMaze
     # ----------------------------------------
 
@@ -1145,3 +1228,6 @@ def register_minigrid_envs():
         id="BabyAI-BossLevelNoUnlock-v0",
         entry_point="minigrid.envs.babyai:BossLevelNoUnlock",
     )
+
+
+register_minigrid_envs()

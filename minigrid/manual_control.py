@@ -6,6 +6,7 @@ import gymnasium as gym
 import pygame
 from gymnasium import Env
 
+import minigrid
 from minigrid.core.actions import Actions
 from minigrid.minigrid_env import MiniGridEnv
 from minigrid.wrappers import ImgObsWrapper, RGBImgPartialObsWrapper
@@ -35,8 +36,8 @@ class ManualControl:
                     self.key_handler(event)
 
     def step(self, action: Actions):
-        _, reward, terminated, truncated, _ = self.env.step(action)
-        print(f"step={self.env.step_count}, reward={reward:.2f}")
+        obs, reward, terminated, truncated, info = self.env.step(action)
+        print(f"step={self.env.unwrapped.step_count}, reward={reward:.2f}")
 
         if terminated:
             print("terminated!")
@@ -66,11 +67,12 @@ class ManualControl:
             "left": Actions.left,
             "right": Actions.right,
             "up": Actions.forward,
-            "space": Actions.toggle,
+            "space": Actions.pickup,
             "pageup": Actions.pickup,
             "pagedown": Actions.drop,
-            "tab": Actions.pickup,
+            "tab": Actions.toggle,
             "left shift": Actions.drop,
+            "right shift": Actions.toggle,
             "enter": Actions.done,
         }
         if key in key_to_action.keys():
